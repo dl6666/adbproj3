@@ -17,6 +17,7 @@ def readCsv(csv_file):
 #             sys.stdout.write('\n');
     return transactions
 
+
 def generateSupportSets2(transactions,min_sup):
     C=[]
     sup_dict = {}
