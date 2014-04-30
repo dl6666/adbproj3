@@ -121,9 +121,9 @@ def genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions
                 temp_tuple = None
                 if k==1:
                     temp_list = [str(i),str(j)]
-                    temp_tuple = (temp_list,",".join(temp_list),set(temp_list))
+                    temp_tuple = (temp_list,",".join(temp_list),set(temp_list),str(i))
                 else:
-                    if p_itemsets[i][1][1:-1] == p_itemsets[j][1][1:-1]:
+                    if p_itemsets[i][2] == p_itemsets[j][2]:
 #                        if debug:
 #                            print p_itemsets[i][0]
 #                            print p_itemsets[j][0]
@@ -132,13 +132,14 @@ def genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions
                         temp_list.append(p_itemsets[j][0][-1])
 #                        if debug:
 #                            print temp_list
-                        temp_tuple = (temp_list,",".join(temp_list),set(temp_list))
+                        temp_tuple = (temp_list,",".join(temp_list),set(temp_list),",".join(temp_list[:-1]))
                 # prune
                 if temp_tuple is not None:
                     flag = True
                     for ele in itertools.combinations(temp_tuple[0],len(temp_tuple[0])-1):
                         if ",".join(ele) not in p_hash_count:
                             flag = False
+                            break
                     if flag == True:
                         cur_itemsets.append(temp_tuple)
                         cur_hash_count[cur_itemsets[-1][1]] = 0
@@ -153,23 +154,23 @@ def genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions
 
         if debug:
             print cur_hash_count
-
-        cur_itemsets_delete = [(x[1]) for x in cur_itemsets if cur_hash_count[x[1]]<min_sup*transactions_count]
-        cur_itemsets = [(x[0],x[1]) for x in cur_itemsets if cur_hash_count[x[1]]>=min_sup*transactions_count]
-        for element in cur_itemsets_delete:
-            cur_hash_count.pop(element,None)
-
+        cur_itemsets_final = list()
+        for ele in cur_itemsets:
+            if cur_hash_count[ele[1]] < min_sup*transactions_count:
+                cur_hash_count.pop(ele[1],None)
+            else:
+                cur_itemsets_final.append((ele[0],ele[1],ele[3]))
         if debug:
             print cur_hash_count
 
         if debug:
             print "*"*10
             print k
-            print cur_itemsets
+            print cur_itemsets_final
             print cur_hash_count
             print "*"*10
 
-    return (cur_hash_count,cur_itemsets)
+    return (cur_hash_count,cur_itemsets_final)
 
 
 
