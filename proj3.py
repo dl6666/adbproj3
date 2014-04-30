@@ -76,7 +76,7 @@ def genFrequentItemsets(transactions,hash_count,count,transactions_count,large,m
     else:
 # the first round
         frequent_0 = list()
-        for i in range(count):
+        for i in xrange(count):
             if hash_count[str(i)] >= min_sup*transactions_count:
                 frequent_0.append(([str(i)],str(i)))
         frequent_list.append(frequent_0)
@@ -113,8 +113,8 @@ def genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions
 #        if debug:
 #            print length
         #gen new candidates
-        for i in range(length-1):
-            for j in range(i+1,length):
+        for i in xrange(length-1):
+            for j in xrange(i+1,length):
 #                if debug:
 #                    print i
 #                    print j
@@ -191,9 +191,9 @@ def genAssociateRule(k,frequent_list,hash_count_all,transactions_count,large,min
         if large:
             pass
         else:
-            for i in range(1,k):
+            for i in xrange(1,k):
                 for frequent_item in frequent_list[i]:
-                    for j in range(i+1):
+                    for j in xrange(i+1):
                         if j==0:
                             hash_string = ",".join(frequent_item[0][1:])
                         else:
@@ -213,7 +213,7 @@ def genAssociateRule(k,frequent_list,hash_count_all,transactions_count,large,min
                                 print sup2
                             #print "An Associate Rule Found"
                             temp_list = list()
-                            for k in range(i+1):
+                            for k in xrange(i+1):
                                 if k != j:
                                     temp_list.append(name_list[int(frequent_item[0][k])])
                             if debug:
@@ -240,7 +240,7 @@ def displayFrequentItems(k,frequent_list,hash_count_all,transactions_count,large
         name_list = json.load(name_input)
         if debug:
             print name_list
-        for i in range(k):
+        for i in xrange(k):
             for frequent_item in frequent_list[i]:
                 sup = hash_count_all[i][frequent_item[1]]
                 temp_list = list()
