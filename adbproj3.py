@@ -6,15 +6,17 @@ import json
 import csv
 import sys
 import itertools
+from operator import *
 
 temp_name_list = "./temp_name_list"
 temp_transactions_list = "./temp_transactions_list"
 csv_delimiter=','
+output_file_path = "./output.txt"
 
 
 # in this function, we read the CSV file, and give each element in the CSV file a index number
 
-def processCSV(file_path,debug,large):
+def processCSV(file_path,debug):
 #output the hash table
 #and return the encoded transactions 
     if debug:
@@ -53,15 +55,11 @@ def processCSV(file_path,debug,large):
     with open(temp_name_list,"w") as output_name_list:
         json.dump(name_list,output_name_list)
 
-    if large:
-        with open(temp_transactions_list,"w") as output_transaction_list:
-            json.dump(transactions,output_transaction_list)
-        return (None,hash_count,count,transactions_count)
     return (transactions,hash_count,count,transactions_count)
 
 
 
-def genFrequentItemsets(transactions,hash_count,count,transactions_count,large,min_sup,debug):
+def genFrequentItemsets(transactions,hash_count,count,transactions_count,min_sup,debug):
 # what we need, a candidate list, a transaction list and a count
     if debug:
         print "*" * 10
@@ -71,188 +69,186 @@ def genFrequentItemsets(transactions,hash_count,count,transactions_count,large,m
     hash_count_all = list()
     hash_count_all.append(hash_count)
 # if we cannot place things in the memory then we store every mid-result in the file
-    if large:
-        pass
-    else:
 # the first round
-        frequent_0 = list()
-        for i in xrange(count):
-            if hash_count[str(i)] >= min_sup*transactions_count:
-                frequent_0.append(([str(i)],str(i)))
-        frequent_list.append(frequent_0)
-        p_hash_count = hash_count
-        p_itemsets = frequent_0
+    frequent_0 = list()
+    for i in xrange(count):
+        if hash_count[str(i)] >= min_sup*transactions_count:
+            frequent_0.append(([str(i)],str(i)))
+    frequent_list.append(frequent_0)
+    p_hash_count = hash_count
+    p_itemsets = frequent_0
 #        if debug:
 #            print p_itemsets
-        if not len(frequent_0):
-            return (0,None,None)
-        k = 1
-        while True:
-            p_hash_count,p_itemsets = genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions_count,large,min_sup,debug)
-            if len(p_itemsets):
-                frequent_list.append(p_itemsets)
-                hash_count_all.append(p_hash_count)
-            else:
-                break
-            k += 1
-            #break
+    if not len(frequent_0):
+        return (0,None,None)
+    k = 1
+    while True:
+        p_hash_count,p_itemsets = genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions_count,min_sup,debug)
+        if len(p_itemsets):
+            frequent_list.append(p_itemsets)
+            hash_count_all.append(p_hash_count)
+        else:
+            break
+        k += 1
+        #break
     return (k,frequent_list,hash_count_all)
 
 
-def genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions_count,large,min_sup,debug):
+def genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions_count,min_sup,debug):
     if debug:
         print "*" * 10
         print sys._getframe().f_code.co_name
         print "*" * 10
     cur_hash_count = dict()
     cur_itemsets = list()
-    if large:
-        pass
-    else:
-        length = len(p_itemsets)
-#        if debug:
-#            print length
-        #gen new candidates
-        for i in xrange(length-1):
-            for j in xrange(i+1,length):
-#                if debug:
-#                    print i
-#                    print j
-                temp_tuple = None
-                if k==1:
-                    temp_list = [str(i),str(j)]
-                    temp_tuple = (temp_list,",".join(temp_list),set(temp_list),str(i))
-                else:
-                    if p_itemsets[i][2] == p_itemsets[j][2]:
-#                        if debug:
-#                            print p_itemsets[i][0]
-#                            print p_itemsets[j][0]
-#                            print p_itemsets[j][0][-1]
-                        temp_list = list(p_itemsets[i][0])
-                        temp_list.append(p_itemsets[j][0][-1])
-#                        if debug:
-#                            print temp_list
-                        temp_tuple = (temp_list,",".join(temp_list),set(temp_list),",".join(temp_list[:-1]))
-                # prune
-                if temp_tuple is not None:
-                    flag = True
-                    for ele in itertools.combinations(temp_tuple[0],len(temp_tuple[0])-1):
-                        if ",".join(ele) not in p_hash_count:
-                            flag = False
-                            break
-                    if flag == True:
-                        cur_itemsets.append(temp_tuple)
-                        cur_hash_count[cur_itemsets[-1][1]] = 0
-
-        for transaction in transactions:
-#            if debug:
-#                print transaction
-            temp_transaction = set(transaction)
-            for element in cur_itemsets:
-                if element[2].issubset(temp_transaction) == True:
-                    cur_hash_count[element[1]] += 1
-
-        if debug:
-            print cur_hash_count
-        cur_itemsets_final = list()
-        for ele in cur_itemsets:
-            if cur_hash_count[ele[1]] < min_sup*transactions_count:
-                cur_hash_count.pop(ele[1],None)
+    length = len(p_itemsets)
+    for i in xrange(length-1):
+        for j in xrange(i+1,length):
+            temp_tuple = None
+            if k==1:
+                temp_list = [str(i),str(j)]
+                temp_tuple = (temp_list,",".join(temp_list),set(temp_list),str(i))
             else:
-                cur_itemsets_final.append((ele[0],ele[1],ele[3]))
-        if debug:
-            print cur_hash_count
+                if p_itemsets[i][2] == p_itemsets[j][2]:
+                    temp_list = list(p_itemsets[i][0])
+                    temp_list.append(p_itemsets[j][0][-1])
+                    temp_tuple = (temp_list,",".join(temp_list),set(temp_list),",".join(temp_list[:-1]))
+            # prune
+            if temp_tuple is not None:
+                flag = True
+                for ele in itertools.combinations(temp_tuple[0],len(temp_tuple[0])-1):
+                    if ",".join(ele) not in p_hash_count:
+                        flag = False
+                        break
+                if flag == True:
+                    cur_itemsets.append(temp_tuple)
+                    cur_hash_count[cur_itemsets[-1][1]] = 0
 
-        if debug:
-            print "*"*10
-            print k
-            print cur_itemsets_final
-            print cur_hash_count
-            print "*"*10
+    for transaction in transactions:
+        temp_transaction = set(transaction)
+        for element in cur_itemsets:
+            if element[2].issubset(temp_transaction) == True:
+                cur_hash_count[element[1]] += 1
+
+    if debug:
+        print cur_hash_count
+
+    cur_itemsets_final = list()
+    for ele in cur_itemsets:
+        if cur_hash_count[ele[1]] < min_sup*transactions_count:
+            cur_hash_count.pop(ele[1],None)
+        else:
+            cur_itemsets_final.append((ele[0],ele[1],ele[3]))
+
+    if debug:
+        print cur_hash_count
+
+    if debug:
+        print "*"*10
+        print k
+        print cur_itemsets_final
+        print cur_hash_count
+        print "*"*10
 
     return (cur_hash_count,cur_itemsets_final)
 
 
 
-def genAssociateRule(k,frequent_list,hash_count_all,transactions_count,large,min_conf,debug):
+def genAssociateRule(k,frequent_list,hash_count_all,transactions_count,min_conf,debug):
+
     if debug:
         print "*" * 10
         print sys._getframe().f_code.co_name
         print "*" * 10
+    output_file = open(output_file_path,"a") 
     print "==High-confidence association rules (min_conf=%s)"%('{:.2%}'.format(min_conf))
+    output_file.write("==High-confidence association rules (min_conf=%s)\n"%('{:.2%}'.format(min_conf)))
+    
     if k == 1 or k == 0:
         print "Not Any Associate Rule Found With The Given Min Confidence"
+        output_file.write("Not Any Associate Rule Found With The Given Min Confidence\n")
         print "Soooooooooooo  Sad"
+        output_file.write("Soooooooooooo  Sad")
     else:
         name_input = open(temp_name_list,"r")
         name_list = json.load(name_input)
         if debug:
             print name_list
-        if large:
-            pass
-        else:
-            for i in xrange(1,k):
-                for frequent_item in frequent_list[i]:
-                    for j in xrange(i+1):
-                        if j==0:
-                            hash_string = ",".join(frequent_item[0][1:])
-                        else:
-                            hash_string = ",".join(frequent_item[0][:j])
-                            if debug:
-                                print i
-                                print j
-                                print frequent_item[0]
-                            try:
-                                if i != 1:
-                                    if j+1 <= i:
-                                        hash_string = hash_string+","+",".join(frequent_item[0][j+1:])
-                            except:
-                                print "error"
-                                pass
+        associate_rule_out_put_list = list()
+        for i in xrange(1,k):
+            for frequent_item in frequent_list[i]:
+                for j in xrange(i+1):
+                    if j==0:
+                        hash_string = ",".join(frequent_item[0][1:])
+                    else:
+                        hash_string = ",".join(frequent_item[0][:j])
                         if debug:
-                            print hash_string
-                        sup = hash_count_all[i][frequent_item[1]]
-                        sup2 = (hash_count_all[i-1][hash_string])
-                        if float(sup) / (sup2) >= min_conf:
-                            if debug:
-                                print sup
-                                print sup2
-                            #print "An Associate Rule Found"
-                            temp_list = list()
-                            for k in xrange(i+1):
-                                if k != j:
-                                    temp_list.append(name_list[int(frequent_item[0][k])])
-                            if debug:
-                                print temp_list
-                                print frequent_item
-                            print "[%s] =====> %s (Conf:%s,Supp:%s)"%(",".join(temp_list),name_list[int(frequent_item[0][j])],'{:.2%}'.format(float(sup)/sup2),'{:.2%}'.format(float(sup)/transactions_count))
+                            print i
+                            print j
+                            print frequent_item[0]
+                        try:
+                            if i != 1:
+                                if j+1 <= i:
+                                    hash_string = hash_string+","+",".join(frequent_item[0][j+1:])
+                        except:
+                            print "error"
+                            pass
+                    if debug:
+                        print hash_string
+                    sup = hash_count_all[i][frequent_item[1]]
+                    sup2 = (hash_count_all[i-1][hash_string])
+                    if float(sup) / (sup2) >= min_conf:
+                        if debug:
+                            print sup
+                            print sup2
+                        #print "An Associate Rule Found"
+                        temp_list = list()
+                        for k in xrange(i+1):
+                            if k != j:
+                                temp_list.append(name_list[int(frequent_item[0][k])])
+                        if debug:
+                            print temp_list
+                            print frequent_item
+#                        print "[%s] =====> %s (Conf:%s,Supp:%s)"%(",".join(temp_list),name_list[int(frequent_item[0][j])],'{:.2%}'.format(float(sup)/sup2),'{:.2%}'.format(float(sup)/transactions_count))
+                        associate_rule_out_put_list.append(("[%s] =====> %s (Conf:%s,Supp:%s)"%(",".join(temp_list),name_list[int(frequent_item[0][j])],'{:.2%}'.format(float(sup)/sup2),'{:.2%}'.format(float(sup)/transactions_count)),float(sup)/sup2,float(sup)/transactions_count))
                             
+        associate_rule_out_put_list = sorted(associate_rule_out_put_list,key=itemgetter(1,2),reverse=True)
+        for associate_rule in associate_rule_out_put_list:
+            print associate_rule[0]
+            output_file.write(associate_rule[0]+"\n")
+        
 
-    #return None
-
-def displayFrequentItems(k,frequent_list,hash_count_all,transactions_count,large,min_sup,debug):
+def displayFrequentItems(k,frequent_list,hash_count_all,transactions_count,min_sup,debug):
     if debug:
         print "*" * 10
         print sys._getframe().f_code.co_name
         print "*" * 10
+    output_file = open(output_file_path,"a") 
     print "==Frequent itemsets (min_sup=%s)"%('{:.2%}'.format(min_sup))
+    output_file.write("==Frequent itemsets (min_sup=%s)\n"%('{:.2%}'.format(min_sup)))
     if not k:
         print "Sooooooooooooooooo Sad"
+        output_file.write("Sooooooooooooooooo Sad\n")
         print "Not Any Frequent Items Found What The Stupid Dataset You Are Using?"
-    if large:
-        pass
+        output_file.write("Not Any Frequent Items Found What The Stupid Dataset You Are Using?\n")
     else:
         name_input = open(temp_name_list,"r")
         name_list = json.load(name_input)
         if debug:
             print name_list
+        frequent_item_out_put_list = list()
         for i in xrange(k):
             for frequent_item in frequent_list[i]:
                 sup = hash_count_all[i][frequent_item[1]]
                 temp_list = list()
                 for ele in frequent_item[0]:
                     temp_list.append(name_list[int(ele)])
-                print "[%s],%s"%(",".join(temp_list),'{:.2%}'.format(float(sup)/transactions_count))
+                frequent_item_out_put_list.append(("[%s],%s"%(",".join(temp_list),'{:.2%}'.format(float(sup)/transactions_count)),float(sup)/transactions_count))
+        frequent_item_out_put_list = sorted(frequent_item_out_put_list,key=itemgetter(1),reverse=True)
+        for frequent_item in frequent_item_out_put_list:
+            print frequent_item[0]
+            output_file.write(frequent_item[0]+"\n")
+                    
 
 
 def clean():
@@ -267,23 +263,23 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i","--input",type=str,dest="file_path",required=True)
     parser.add_argument("-d","--debug",type=int,dest="debug",default=0)
-    parser.add_argument("-l","--large",type=int,dest="large",default=0)
     parser.add_argument("-s","--minsup",type=float,dest="min_sup",default=0.75)
     parser.add_argument("-c","--minconf",type=float,dest="min_conf",default=0.8)
     #parser.add_argument("--delimiter",type=str,dest="delimiter",default=csv_delimiter)
     args = parser.parse_args()
-    transactions,hash_count,count,transactions_count=processCSV(args.file_path,args.debug,args.large)
-    k,frequent_list,hash_count_all=genFrequentItemsets(transactions,hash_count,count,transactions_count,args.large,args.min_sup,args.debug)
+    transactions,hash_count,count,transactions_count=processCSV(args.file_path,args.debug)
+    k,frequent_list,hash_count_all=genFrequentItemsets(transactions,hash_count,count,transactions_count,args.min_sup,args.debug)
+    if os.path.exists(output_file_path):
+        os.remove(output_file_path)
     if args.debug:
         print k
         print frequent_list
         print hash_count_all
     print frequent_list
-    displayFrequentItems(k,frequent_list,hash_count_all,transactions_count,args.large,args.min_sup,args.debug)
-    genAssociateRule(k,frequent_list,hash_count_all,transactions_count,args.large,args.min_conf,args.debug)
+    displayFrequentItems(k,frequent_list,hash_count_all,transactions_count,args.min_sup,args.debug)
+    genAssociateRule(k,frequent_list,hash_count_all,transactions_count,args.min_conf,args.debug)
     if not args.debug:
-        pass
-        #clean()
+        clean()
 
 
 if __name__=="__main__":
