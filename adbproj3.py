@@ -15,6 +15,7 @@ output_file_path = "./output.txt"
 
 
 # in this function, we read the CSV file, and give each element in the CSV file a index number
+# thus reducing the total memory usage and give better performance than processing long string
 
 def processCSV(file_path,debug):
 #output the hash table
@@ -51,14 +52,16 @@ def processCSV(file_path,debug):
         print hash_count
         print hash_dict
         print transactions
-    
+
+    # we output the temporary file as the index mapping an integer to its real string
+    # when the program finishes, we delete this file
     with open(temp_name_list,"w") as output_name_list:
         json.dump(name_list,output_name_list)
 
     return (transactions,hash_count,count,transactions_count)
 
 
-
+# the entry of getting the frequent itemsets
 def genFrequentItemsets(transactions,hash_count,count,transactions_count,min_sup,debug):
 # what we need, a candidate list, a transaction list and a count
     if debug:
@@ -67,14 +70,25 @@ def genFrequentItemsets(transactions,hash_count,count,transactions_count,min_sup
         print "*" * 10
     frequent_list = list()
     hash_count_all = list()
-    hash_count_all.append(hash_count)
-# if we cannot place things in the memory then we store every mid-result in the file
-# the first round
+
     frequent_0 = list()
+
+# the first round
+#processing the first single element group
+# count is the total number of items, and we start from the lowest number of the item, then every time during the iteration, we can keep the property that the itemset is sorted, without further sort. 
     for i in xrange(count):
+        if debug:
+            print i
+            print hash_count[str(i)]  
+            print min_sup*transactions_count
+            print min_sup
+            print transactions_count
         if hash_count[str(i)] >= min_sup*transactions_count:
             frequent_0.append(([str(i)],str(i)))
+        else:
+            hash_count.pop(str(i),None)
     frequent_list.append(frequent_0)
+    hash_count_all.append(hash_count)
     p_hash_count = hash_count
     p_itemsets = frequent_0
 #        if debug:
@@ -83,6 +97,7 @@ def genFrequentItemsets(transactions,hash_count,count,transactions_count,min_sup
         return (0,None,None)
     k = 1
     while True:
+#start iteration
         p_hash_count,p_itemsets = genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions_count,min_sup,debug)
         if len(p_itemsets):
             frequent_list.append(p_itemsets)
@@ -102,21 +117,36 @@ def genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions
     cur_hash_count = dict()
     cur_itemsets = list()
     length = len(p_itemsets)
+#for each pair of the itemsets in previous iteration, we combine them if they can be combined
+# and for each itemsets in the previous set is sorted, then we do not need to sort them, every time the combination will give you another sorted itemset, as well as the total list of itemsets.
+    #print p_hash_count
     for i in xrange(length-1):
         for j in xrange(i+1,length):
             temp_tuple = None
+# if this is the first iteration, we don't need to compare anything
             if k==1:
-                temp_list = [str(i),str(j)]
-                temp_tuple = (temp_list,",".join(temp_list),set(temp_list),str(i))
+                temp_list = [p_itemsets[i][0][0],p_itemsets[j][0][0]]
+                temp_tuple = (temp_list,",".join(temp_list),set(temp_list),p_itemsets[i][0][0])
+
+# then we store each k-1 string in the 2 position of the itemsets tuple, then we can just compare them in O(1) time
+# for python treat each string as a constant
             else:
+# if two itemsets with length k are equal in their previous k-1 position, then we combine them to a new one, and note that in the sequence of our insertion value start from the smaller sequence, then we can ensure that p_itemsets[j][0][-1] has a larger index element
                 if p_itemsets[i][2] == p_itemsets[j][2]:
                     temp_list = list(p_itemsets[i][0])
                     temp_list.append(p_itemsets[j][0][-1])
                     temp_tuple = (temp_list,",".join(temp_list),set(temp_list),",".join(temp_list[:-1]))
             # prune
+# then we need to do the pruning
             if temp_tuple is not None:
                 flag = True
+# we use the itertools to get the combinations of k elements in our new k+1 itemsets, if one of these substring is not in the previous hash_count structure(which only contains frequent item larger than the min_support) then we think this tuple is not eligible.
+# the most important property is that the combinations function won't disrupt the order of our element in the itemset, then we can ensure that the one of the combination string is in our hash table if and only if the set exceeds the min support 
                 for ele in itertools.combinations(temp_tuple[0],len(temp_tuple[0])-1):
+                    if debug:
+                        print temp_tuple
+                        print ele
+                        print ",".join(ele)
                     if ",".join(ele) not in p_hash_count:
                         flag = False
                         break
@@ -124,16 +154,25 @@ def genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions
                     cur_itemsets.append(temp_tuple)
                     cur_hash_count[cur_itemsets[-1][1]] = 0
 
+# then we use transaction to construct the new hash count
+# this time we use the data structure called set in the python, it provides the convenient function issubset to determine whether a set is the subset of another one.
+    #print p_hash_count
+    #raw_input()
     for transaction in transactions:
         temp_transaction = set(transaction)
         for element in cur_itemsets:
+            if debug:
+                print element
+                #raw_input()
+            #print "haha"
             if element[2].issubset(temp_transaction) == True:
                 cur_hash_count[element[1]] += 1
 
     if debug:
-        print cur_hash_count
+		print cur_hash_count
 
     cur_itemsets_final = list()
+# then we filter out those itemsets lower than the threshold
     for ele in cur_itemsets:
         if cur_hash_count[ele[1]] < min_sup*transactions_count:
             cur_hash_count.pop(ele[1],None)
@@ -234,8 +273,6 @@ def displayFrequentItems(k,frequent_list,hash_count_all,transactions_count,min_s
     else:
         name_input = open(temp_name_list,"r")
         name_list = json.load(name_input)
-        if debug:
-            print name_list
         frequent_item_out_put_list = list()
         for i in xrange(k):
             for frequent_item in frequent_list[i]:
@@ -275,7 +312,6 @@ def main():
         print k
         print frequent_list
         print hash_count_all
-    print frequent_list
     displayFrequentItems(k,frequent_list,hash_count_all,transactions_count,args.min_sup,args.debug)
     genAssociateRule(k,frequent_list,hash_count_all,transactions_count,args.min_conf,args.debug)
     if not args.debug:

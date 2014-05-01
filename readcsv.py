@@ -13,21 +13,101 @@ csv_delimiter=','
 default_output_file_path = "./output.csv"
 default_max_rows = 10000
 interest_columns_index=[1,3,4,5,6,7,8,16]
+
+
+"""
 interest_columns_dict={
         1:"Date",
         #3:"Agency",
-        #4:"Agency Name",
+        4:"Agency Name",
         5:"Complaint Type",
-        #6:"Descriptor",
-        #7:"Location Type", 
+        6:"Descriptor",
+        7:"Location Type", 
         #8:"Incident Zip",
         16:"City"
         }
 
 
-"""
 the first several column of the original csv file is as follows
 ['Unique Key', 'Created Date', 'Closed Date', 'Agency', 'Agency Name', 'Complaint Type', 'Descriptor', 'Location Type', 'Incident Zip', 'Incident Address', 'Street Name', 'Cross Street 1', 'Cross Street 2', 'Intersection Street 1', 'Intersection Street 2', 'Address Type', 'City', 'Landmark', 'Facility Type']
+we want Combine Created Date,Close Date to be a affair length count as days [1,2]
+Agency [3]
+Agency Name [4]
+Complaint Type [5]
+Descriptor [6] this field can be regarded as a descant of the Complaint Type
+Location Type [7] What 
+Incident Zip [8]
+City [16]
+"""
+
+interest_columns_dict = {
+    #"0": "Project Name", 
+    #"1": "Project Description", 
+    #"2": "Stimulus Tracker ID", 
+    "3": "Funding Category", 
+    "4": "Funding Source", 
+    #"5": "Stimulus Funding", 
+    #"6": "Displaced City Funding", 
+    #"7": "All Other Funding", 
+    #"8": "Award Lead City Agency", 
+    "9": "Project Lead City Agency", 
+    "10": "Project Status", 
+    #"11": "% of Funds Spent", 
+    #"12": "Date Funds Awarded by Fed/State", 
+    #"13": "Date Funds Announced by NYC", 
+    "14": ["Start Delay",14,15], 
+    #"15": "Actual Start Date", 
+    #"16": "Actual Completion Date", 
+    #"17": "Interim Spending Deadline", 
+    #"18": "% of Funds to be Spent by Interim Spending Deadine", 
+    #"19": "Final Spending Deadline", 
+    "20": "Contract Name", 
+    "21": "Contract Method", 
+    "22": "Contract Status", 
+    #"23": "Contract ID #", 
+    "24": "Vendor Name", 
+    #"25": "Conttract Start Date", 
+    #"26": "Contract End Date", 
+    "27": "New or Existing Contract", 
+    #"28": "Revised Contract Start Date", 
+    #"29": "Revised Contract End Date", 
+    #"30": "Contract Value", 
+    "31": "Payment Recipient", 
+    "32": "Payment Type", 
+    #"33": "Payment Date", 
+    "34": "Payment Description", 
+    #"35": "Payment Id", 
+    #"36": "Payment Value"
+}
+
+
+
+"""
+
+
+interest_columns_dict={
+        1:"Date",
+        3:"Agency",
+        4:"Agency Name",
+        5:"Complaint Type",
+        6:"Descriptor",
+        7:"Location Type", 
+        #8:"Incident Zip",
+        16:"City"
+        1:"Date",
+        #3:"Agency",
+        4:"Agency Name",
+        5:"Complaint Type",
+        6:"Descriptor",
+        7:"Location Type", 
+        #8:"Incident Zip",
+        16:"City"
+        }
+
+
+the first several column of the original csv file is as follows
+
+['Project Name', 'Project Description', 'Stimulus Tracker ID', 'Funding Category', 'Funding Source', 'Stimulus Funding', 'Displaced City Funding', 'All Other Funding', 'Award Lead City Agency', 'Project Lead City Agency', 'Project Status', '% of Funds Spent', 'Date Funds Awarded by Fed/State', 'Date Funds Announced by NYC', 'Estimated Start Date', 'Actual Start Date', 'Actual Completion Date', 'Interim Spending Deadline', '% of Funds to be Spent by Interim Spending Deadine', 'Final Spending Deadline', 'Contract Name', 'Contract Method', 'Contract Status', 'Contract ID #', 'Vendor Name', 'Conttract Start Date', 'Contract End Date', 'New or Existing Contract', 'Revised Contract Start Date', 'Revised Contract End Date', 'Contract Value', 'Payment Recipient', 'Payment Type', 'Payment Date', 'Payment Description', 'Payment Id', 'Payment Value']
 we want Combine Created Date,Close Date to be a affair length count as days [1,2]
 Agency [3]
 Agency Name [4]
@@ -55,6 +135,14 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
         raw_transactions = csv.reader(csv_input,delimiter=csv_delimiter,quotechar='"',dialect=csv.excel_tab)
         head = raw_transactions.next()
         print head
+        out_put_dict = dict()
+        head_count = 0
+        for element in head:
+            out_put_dict[head_count] = element
+            head_count += 1
+        with open("./csv_head","w") as out_head:
+            json.dump(out_put_dict,out_head,indent = 4)
+
         #raw_input()
         for raw_row in raw_transactions:
             if count > max_rows:
@@ -66,37 +154,60 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
             flag = True
             for key in interest_columns_dict.keys():
 # process date
-                if key == 1:
-                    if raw_row[1] != '' and raw_row[2] != '': 
+                int_key = int(key)
+                if debug:
+                    print int_key
+                    print raw_row[int_key]
+                if isinstance(interest_columns_dict[key],list):
+                    if raw_row[interest_columns_dict[key][1]] != '' and raw_row[interest_columns_dict[key][2]] != '': 
                         #print raw_row[1]
                         #print raw_row[2]
-                        delta_days=int((datetime.strptime(raw_row[2],"%m/%d/%y %H:%M") - datetime.strptime(raw_row[1],"%m/%d/%y %H:%M")).days)
+                        delta_days=int((datetime.strptime(raw_row[interest_columns_dict[key][2]],"%m/%d/%Y %H:%M:%S") - datetime.strptime(raw_row[interest_columns_dict[key][1]],"%m/%d/%Y %H:%M:%S")).days)
                         if debug:
                             print delta_days
+                        prefix = interest_columns_dict[key][0]
                         if delta_days <= 1:
-                            processed_row.append('less than 1 day')
+                            processed_row.append(prefix+':less than 1 day')
                         elif delta_days <=5:
-                            processed_row.append('less than 5 days')
+                            processed_row.append(prefix+':less than 5 day')
                         elif delta_days <=10:
-                            processed_row.append('less than 10 days')
+                            processed_row.append(prefix+':less than 10 day')
                         elif delta_days <=20:
-                            processed_row.append('less than 20 days')
+                            processed_row.append(prefix+':less than 20 day')
                         elif delta_days <=30:
-                            processed_row.append('less than 1 month')
+                            processed_row.append(prefix+':less than 1 month')
                         else:
-                            processed_row.append('longer than 1 month')
+                            processed_row.append(prefix+':more than 1 month')
                         #print time.strptime("%m/%d/%y %H:%M","0"+raw_row[1])
                         #raw_input()
                     else:
                         processed_row.append('')
                 else:
-                    processed_row.append(raw_row[key])
+                    if len(raw_row[int_key]):
+                        processed_row.append(interest_columns_dict[key]+":"+raw_row[int_key])
+                    else:
+                        processed_row.append('')
+                if debug:
+                    print processed_row
+                    #raw_input()
+
+            if debug:
+                print processed_row
+                raw_input()
             
-            if null_filter:
-                if '' in processed_row:
-                    if debug:
-                        print "null field found"
+            
+            if '' in processed_row:
+                if debug:
+                    print "null field found"
+                    print processed_row
+                if null_filter:
                     flag = False
+                else:
+                    processed_row = [item for item in processed_row if len(item) != 0]
+                if debug:
+                    print processed_row
+                    raw_input()
+
             if flag == True:
                 if debug:
                     print "eligible field found"
@@ -113,7 +224,7 @@ def main():
     parser.add_argument("-i","--input",type=str,dest="input_file_path",required=True)
     parser.add_argument("-o","--output",type=str,dest="output_file_path",default=default_output_file_path)
     parser.add_argument("-m","--maxrows",type=int,dest="max_rows",default=default_max_rows)
-    parser.add_argument("-f","--filter",type=int,dest="null_filter",default=1,choices=[0,1],help="enable this option will let the program ignore all the rows that contain any null field")
+    parser.add_argument("-f","--filter",type=int,dest="null_filter",default=0,choices=[0,1],help="enable this option will let the program ignore all the rows that contain any null field")
     parser.add_argument("-d","--debug",type=int,dest="debug",default=0,choices=[0,1])
     parser.add_argument("--delimiter",type=str,dest="delimiter",default=csv_delimiter,choices=[',','^','#'])
     args = parser.parse_args()

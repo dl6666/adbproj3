@@ -1,19 +1,11 @@
-==Frequent itemsets (min_sup=50.00%)
-[pen],100.00%
-[ink],83.33%
-[pen,ink],83.33%
-[diary],66.67%
-[pen,diary],66.67%
-[book],50.00%
-[ink,diary],50.00%
-[pen,ink,diary],50.00%
-==High-confidence association rules (min_conf=20.00%)
-[ink] =====> pen (Conf:100.00%,Supp:83.33%)
-[diary] =====> pen (Conf:100.00%,Supp:66.67%)
-[ink,diary] =====> pen (Conf:100.00%,Supp:50.00%)
-[pen] =====> ink (Conf:83.33%,Supp:83.33%)
-[diary] =====> ink (Conf:75.00%,Supp:50.00%)
-[pen,diary] =====> ink (Conf:75.00%,Supp:50.00%)
-[pen] =====> diary (Conf:66.67%,Supp:66.67%)
-[ink] =====> diary (Conf:60.00%,Supp:50.00%)
-[pen,ink] =====> diary (Conf:60.00%,Supp:50.00%)
+==Frequent itemsets (min_sup=60.00%)
+[payment type:vendor payment (otps)],91.26%
+[start delay:less than 1 day],85.15%
+[start delay:less than 1 day,payment type:vendor payment (otps)],78.17%
+[contract status:authorized to start work],61.79%
+[payment type:vendor payment (otps),contract status:authorized to start work],60.69%
+[project status:less than 50% completed],60.11%
+==High-confidence association rules (min_conf=80.00%)
+[contract status:authorized to start work] =====> payment type:vendor payment (otps) (Conf:98.22%,Supp:60.69%)
+[start delay:less than 1 day] =====> payment type:vendor payment (otps) (Conf:91.81%,Supp:78.17%)
+[payment type:vendor payment (otps)] =====> start delay:less than 1 day (Conf:85.66%,Supp:78.17%)
