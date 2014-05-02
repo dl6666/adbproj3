@@ -32,6 +32,7 @@ def processCSV(file_path,debug):
     count = 0
     with open(file_path,"r") as csv_input:
         raw_transactions = csv.reader(csv_input,delimiter=csv_delimiter,quotechar='"')
+#by this loop, we convert each unique string to an unique integer
         for raw_row in raw_transactions:
             processed_raw = list()
             transactions_count += 1
@@ -204,20 +205,24 @@ def genAssociateRule(k,frequent_list,hash_count_all,transactions_count,min_conf,
     output_file.write("\n\n\n")
     print "==High-confidence association rules (min_conf=%s)"%('{:.2%}'.format(min_conf))
     output_file.write("==High-confidence association rules (min_conf=%s)\n"%('{:.2%}'.format(min_conf)))
-    
+   # if there isn't any even length 2 itemsets, then it will be no associate rule
     if k == 1 or k == 0:
         print "Not Any Associate Rule Found With The Given Min Confidence"
         output_file.write("Not Any Associate Rule Found With The Given Min Confidence\n")
         print "Soooooooooooo  Sad"
         output_file.write("Soooooooooooo  Sad")
     else:
+# open the file with the original string information
         name_input = open(temp_name_list,"r")
         name_list = json.load(name_input)
         if debug:
             print name_list
         associate_rule_out_put_list = list()
+# generate each length's itemsets's associate rules
         for i in xrange(1,k):
+        # iterate each elements in the L\_i
             for frequent_item in frequent_list[i]:
+                # iterate each possible rule
                 for j in xrange(i+1):
                     if j==0:
                         hash_string = ",".join(frequent_item[0][1:])
@@ -236,8 +241,10 @@ def genAssociateRule(k,frequent_list,hash_count_all,transactions_count,min_conf,
                             pass
                     if debug:
                         print hash_string
+# refer the hash count table to find the count(support)
                     sup = hash_count_all[i][frequent_item[1]]
                     sup2 = (hash_count_all[i-1][hash_string])
+# filter with mini conf
                     if float(sup) / (sup2) >= min_conf:
                         if debug:
                             print sup
@@ -273,13 +280,17 @@ def displayFrequentItems(k,frequent_list,hash_count_all,transactions_count,min_s
         print "Not Any Frequent Items Found What The Stupid Dataset You Are Using?"
         output_file.write("Not Any Frequent Items Found What The Stupid Dataset You Are Using?\n")
     else:
+# open the file with the original string information
         name_input = open(temp_name_list,"r")
         name_list = json.load(name_input)
         frequent_item_out_put_list = list()
+# generate each length's itemsets's frequent list
         for i in xrange(k):
+        # iterate each elements in the L\_i
             for frequent_item in frequent_list[i]:
                 sup = hash_count_all[i][frequent_item[1]]
                 temp_list = list()
+            # look up the original string information to build the output string 
                 for ele in frequent_item[0]:
                     temp_list.append(name_list[int(ele)])
                 frequent_item_out_put_list.append(("[%s],%s"%(",".join(temp_list),'{:.2%}'.format(float(sup)/transactions_count)),float(sup)/transactions_count))

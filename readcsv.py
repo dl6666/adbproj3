@@ -14,62 +14,15 @@ default_output_file_path = "./output.csv"
 default_max_rows = 10000
 
 
+# we use this global dict to specify which column we want
 interest_columns_dict = {
     #"0": "Unique Key", 
     "97": ["Solve Time",1,2], 
     "98": ["Season",1], 
-#    "0": "Unique Key", 
-#    "1": "Created Date", 
-#    "2": "Closed Date", 
     "3": "Agency", 
-#    "4": "Agency Name", 
     "5": "Complaint Type", 
-#    "6": "Descriptor", 
     "7": "Location Type", 
-#    "8": "Incident Zip", 
-#    "9": "Incident Address", 
-#    "10": "Street Name", 
-#    "11": "Cross Street 1", 
-#    "12": "Cross Street 2", 
-#    "13": "Intersection Street 1", 
-#    "14": "Intersection Street 2", 
-#    "15": "Address Type", 
-#    "16": "City", 
-#    "17": "Landmark", 
-#    "18": "Facility Type", 
-#    "19": "Status", 
-#    "20": "Due Date", 
-#    "21": "Resolution Action Updated Date", 
-#    "22": "Community Board", 
     "23": "Borough", 
-#    "24": "X Coordinate (State Plane)", 
-#    "25": "Y Coordinate (State Plane)", 
-#    "26": "Park Facility Name", 
-#    "27": "Park Borough", 
-#    "28": "School Name", 
-#    "29": "School Number", 
-#    "30": "School Region", 
-#    "31": "School Code", 
-#    "32": "School Phone Number", 
-#    "33": "School Address", 
-#    "34": "School City", 
-#    "35": "School State", 
-#    "36": "School Zip", 
-#    "37": "School Not Found", 
-#    "38": "School or Citywide Complaint", 
-#    "39": "Vehicle Type", 
-#    "40": "Taxi Company Borough", 
-#    "41": "Taxi Pick Up Location", 
-#    "42": "Bridge Highway Name", 
-#    "43": "Bridge Highway Direction", 
-#    "44": "Road Ramp", 
-#    "45": "Bridge Highway Segment", 
-#    "46": "Garage Lot Name", 
-#    "47": "Ferry Direction", 
-#    "48": "Ferry Terminal Name", 
-#    "49": "Latitude", 
-#    "50": "Longitude", 
-#    "51": "Location"
 }
 
 
@@ -87,6 +40,7 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
     line = 0
     output_csv_file = open(output_file_path,"wb")
     output_csv_write = csv.writer(output_csv_file,delimiter=csv_delimiter,quotechar='"')
+# open the csv file
     with open(input_file_path,"rU") as csv_input:
         raw_transactions = csv.reader(csv_input,delimiter=csv_delimiter,quotechar='"',dialect=csv.excel_tab)
         head = raw_transactions.next()
@@ -96,6 +50,7 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
         for element in head:
             out_put_dict[head_count] = element
             head_count += 1
+        # output the head column of the csv file
         with open("./csv_head","w") as out_head:
             json.dump(out_put_dict,out_head,indent = 4)
 
@@ -103,12 +58,14 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
         for raw_row in raw_transactions:
             if count > max_rows:
                 break
+            #every 20 rows we sample one 
             if line%20 == 0:
                 processed_row = list()
                 flag = True
                 for key in interest_columns_dict.keys():
 # process date
                     int_key = int(key)
+# compute the solve time
                     if int_key==97:
                         if raw_row[interest_columns_dict[key][1]] != '' and raw_row[interest_columns_dict[key][2]] != '': 
                             #print raw_row[1]
@@ -127,6 +84,7 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
                             #raw_input()
                         else:
                             processed_row.append('')
+# compute the event occurrence month
                     elif int_key==98:
                         if raw_row[interest_columns_dict[key][1]] != '' :
                             prefix = interest_columns_dict[key][0]
@@ -135,6 +93,7 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
                             processed_row.append(prefix+":%s"%(str(month)))
                         else:
                             processed_row.append('')
+# compute the event occurrence day time period
                     elif int_key == 99:
                         if raw_row[interest_columns_dict[key][1]] != '' :
                             prefix = interest_columns_dict[key][0]
@@ -148,6 +107,7 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
                                 processed_row.append(prefix+":Evening")
                         else:
                             processed_row.append('')
+# Unspecified and '' are both meaning less
                     elif int_key == 23:
                         if len(raw_row[int_key]) and raw_row[int_key] != "Unspecified":
                             processed_row.append(interest_columns_dict[key]+":"+raw_row[int_key])
@@ -166,7 +126,7 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
                     print processed_row
                     raw_input()
                 
-                
+               # the different operation for null-contained row 
                 if '' in processed_row:
                     if debug:
                         print "null field found"
