@@ -200,6 +200,7 @@ def genAssociateRule(k,frequent_list,hash_count_all,transactions_count,min_conf,
         print sys._getframe().f_code.co_name
         print "*" * 10
     output_file = open(output_file_path,"a") 
+    output_file.write("\n\n\n")
     print "==High-confidence association rules (min_conf=%s)"%('{:.2%}'.format(min_conf))
     output_file.write("==High-confidence association rules (min_conf=%s)\n"%('{:.2%}'.format(min_conf)))
     
@@ -312,6 +313,7 @@ def main():
         print k
         print frequent_list
         print hash_count_all
+    print transactions_count
     displayFrequentItems(k,frequent_list,hash_count_all,transactions_count,args.min_sup,args.debug)
     genAssociateRule(k,frequent_list,hash_count_all,transactions_count,args.min_conf,args.debug)
     if not args.debug:

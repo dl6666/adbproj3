@@ -1,11 +1,110 @@
-==Frequent itemsets (min_sup=60.00%)
-[payment type:vendor payment (otps)],91.26%
-[start delay:less than 1 day],85.15%
-[start delay:less than 1 day,payment type:vendor payment (otps)],78.17%
-[contract status:authorized to start work],61.79%
-[payment type:vendor payment (otps),contract status:authorized to start work],60.69%
-[project status:less than 50% completed],60.11%
-==High-confidence association rules (min_conf=80.00%)
-[contract status:authorized to start work] =====> payment type:vendor payment (otps) (Conf:98.22%,Supp:60.69%)
-[start delay:less than 1 day] =====> payment type:vendor payment (otps) (Conf:91.81%,Supp:78.17%)
-[payment type:vendor payment (otps)] =====> start delay:less than 1 day (Conf:85.66%,Supp:78.17%)
+==Frequent itemsets (min_sup=5.00%)
+[solve time:more than 1 week],36.45%
+[location type:residential building],35.32%
+[agency:hpd],35.31%
+[agency:hpd,location type:residential building],35.31%
+[solve time:same day],25.91%
+[location type:residential building,solve time:more than 1 week],20.85%
+[agency:hpd,solve time:more than 1 week],20.84%
+[agency:hpd,location type:residential building,solve time:more than 1 week],20.84%
+[borough:queens],18.91%
+[borough:brooklyn],18.49%
+[agency:dot],17.85%
+[borough:manhattan],14.10%
+[agency:dep],13.79%
+[complaint type:heating],12.86%
+[agency:hpd,complaint type:heating],12.86%
+[complaint type:heating,location type:residential building],12.86%
+[agency:hpd,complaint type:heating,location type:residential building],12.86%
+[agency:nypd],9.82%
+[season:11],8.90%
+[season:2],8.89%
+[season:1],8.82%
+[season:12],8.61%
+[season:3],8.60%
+[season:10],8.56%
+[location type:street],8.56%
+[season:7],8.45%
+[season:8],8.43%
+[solve time:same day,agency:nypd],8.14%
+[season:6],8.03%
+[solve time:same day,agency:dot],7.96%
+[season:4],7.87%
+[location type:street/sidewalk],7.75%
+[agency:nypd,location type:street/sidewalk],7.75%
+[agency:dsny],7.74%
+[borough:brooklyn,solve time:same day],7.73%
+[solve time:same day,borough:queens],7.69%
+[borough:bronx],7.63%
+[season:5],7.49%
+[season:9],7.35%
+[complaint type:street light condition],7.33%
+[agency:dot,complaint type:street light condition],7.33%
+[agency:dob],6.84%
+[solve time:same day,location type:street/sidewalk],6.49%
+[solve time:same day,agency:nypd,location type:street/sidewalk],6.49%
+[complaint type:plumbing],6.01%
+[complaint type:general construction],5.84%
+[agency:hpd,complaint type:general construction],5.84%
+[location type:residential building,complaint type:general construction],5.84%
+[agency:hpd,location type:residential building,complaint type:general construction],5.84%
+[agency:hpd,complaint type:plumbing],5.80%
+[location type:residential building,complaint type:plumbing],5.80%
+[agency:hpd,location type:residential building,complaint type:plumbing],5.80%
+[borough:queens,agency:dot],5.44%
+[borough:brooklyn,agency:dot],5.36%
+[complaint type:sewer],5.22%
+[agency:dep,complaint type:sewer],5.22%
+[agency:dep,solve time:same day],5.11%
+
+
+
+==High-confidence association rules (min_conf=20.00%)
+[agency:hpd] =====> location type:residential building (Conf:100.00%,Supp:35.31%)
+[agency:hpd,solve time:more than 1 week] =====> location type:residential building (Conf:100.00%,Supp:20.84%)
+[complaint type:heating] =====> agency:hpd (Conf:100.00%,Supp:12.86%)
+[complaint type:heating] =====> location type:residential building (Conf:100.00%,Supp:12.86%)
+[complaint type:heating,location type:residential building] =====> agency:hpd (Conf:100.00%,Supp:12.86%)
+[agency:hpd,complaint type:heating] =====> location type:residential building (Conf:100.00%,Supp:12.86%)
+[location type:street/sidewalk] =====> agency:nypd (Conf:100.00%,Supp:7.75%)
+[complaint type:street light condition] =====> agency:dot (Conf:100.00%,Supp:7.33%)
+[solve time:same day,location type:street/sidewalk] =====> agency:nypd (Conf:100.00%,Supp:6.49%)
+[complaint type:general construction] =====> agency:hpd (Conf:100.00%,Supp:5.84%)
+[complaint type:general construction] =====> location type:residential building (Conf:100.00%,Supp:5.84%)
+[location type:residential building,complaint type:general construction] =====> agency:hpd (Conf:100.00%,Supp:5.84%)
+[agency:hpd,complaint type:general construction] =====> location type:residential building (Conf:100.00%,Supp:5.84%)
+[location type:residential building,complaint type:plumbing] =====> agency:hpd (Conf:100.00%,Supp:5.80%)
+[agency:hpd,complaint type:plumbing] =====> location type:residential building (Conf:100.00%,Supp:5.80%)
+[complaint type:sewer] =====> agency:dep (Conf:100.00%,Supp:5.22%)
+[location type:residential building,solve time:more than 1 week] =====> agency:hpd (Conf:99.99%,Supp:20.84%)
+[location type:residential building] =====> agency:hpd (Conf:99.96%,Supp:35.31%)
+[complaint type:plumbing] =====> agency:hpd (Conf:96.48%,Supp:5.80%)
+[complaint type:plumbing] =====> location type:residential building (Conf:96.48%,Supp:5.80%)
+[location type:street/sidewalk] =====> solve time:same day (Conf:83.74%,Supp:6.49%)
+[agency:nypd,location type:street/sidewalk] =====> solve time:same day (Conf:83.74%,Supp:6.49%)
+[agency:nypd] =====> solve time:same day (Conf:82.86%,Supp:8.14%)
+[solve time:same day,agency:nypd] =====> location type:street/sidewalk (Conf:79.70%,Supp:6.49%)
+[agency:nypd] =====> location type:street/sidewalk (Conf:78.87%,Supp:7.75%)
+[agency:hpd] =====> solve time:more than 1 week (Conf:59.04%,Supp:20.84%)
+[agency:hpd,location type:residential building] =====> solve time:more than 1 week (Conf:59.04%,Supp:20.84%)
+[location type:residential building] =====> solve time:more than 1 week (Conf:59.02%,Supp:20.85%)
+[solve time:more than 1 week] =====> location type:residential building (Conf:57.19%,Supp:20.85%)
+[solve time:more than 1 week] =====> agency:hpd (Conf:57.18%,Supp:20.84%)
+[agency:dot] =====> solve time:same day (Conf:44.62%,Supp:7.96%)
+[borough:brooklyn] =====> solve time:same day (Conf:41.80%,Supp:7.73%)
+[agency:dot] =====> complaint type:street light condition (Conf:41.10%,Supp:7.33%)
+[borough:queens] =====> solve time:same day (Conf:40.68%,Supp:7.69%)
+[agency:dep] =====> complaint type:sewer (Conf:37.88%,Supp:5.22%)
+[agency:dep] =====> solve time:same day (Conf:37.03%,Supp:5.11%)
+[agency:hpd] =====> complaint type:heating (Conf:36.43%,Supp:12.86%)
+[agency:hpd,location type:residential building] =====> complaint type:heating (Conf:36.43%,Supp:12.86%)
+[location type:residential building] =====> complaint type:heating (Conf:36.41%,Supp:12.86%)
+[solve time:same day] =====> agency:nypd (Conf:31.41%,Supp:8.14%)
+[solve time:same day] =====> agency:dot (Conf:30.73%,Supp:7.96%)
+[agency:dot] =====> borough:queens (Conf:30.50%,Supp:5.44%)
+[agency:dot] =====> borough:brooklyn (Conf:30.04%,Supp:5.36%)
+[solve time:same day] =====> borough:brooklyn (Conf:29.82%,Supp:7.73%)
+[solve time:same day] =====> borough:queens (Conf:29.69%,Supp:7.69%)
+[borough:brooklyn] =====> agency:dot (Conf:29.00%,Supp:5.36%)
+[borough:queens] =====> agency:dot (Conf:28.78%,Supp:5.44%)
+[solve time:same day] =====> location type:street/sidewalk (Conf:25.04%,Supp:6.49%)
