@@ -203,95 +203,90 @@ As mentioned above, since the dataset is so diverse, our support and confidence 
 
 As discussed in the sections above, these results are interesting because they have the potential to tell us information we can use to do the prediction in the future.This is real data created by real New Yorkers and tells us information about the various happenings in the city as well as revealing patterns across many dimensions, such as time, location, and government agency. This can help the government manage and allocate its resources efficiently to match the patterns that arise from the raw data.
 
--------------------------------------------------------------
-g) Any additional information that you consider significant
+##(g) Any additional information that you consider significant.
+Following are examples of interesting association rules we found. There are description and use cases following each set of rules. These rules are extremely interesting because they are potientially useful to help agencies and government to distribute their resources wisely and make residents in New York live better. More rules are available in the example-run.txt file. 
 
-Please refer to the example-run.txt. We have many, many interesting rules
-generated. We discuss a few of them here. The ramifications of these rules
-are extremely interesting to an analyst and can help the government
-restructure its resources in ways that match the data. Please refer to attr_list.txt if
-you need clarification on which column the rule is from (which can be easily
-inferred).
+###1. Agency VS Borough:
+[agency:dot] =====> borough:queens (Conf:30.50%,Supp:5.44%)
+[agency:dot] =====> borough:manhattan (Conf:19.43%,Supp:3.47%)
+[agency:dot] =====> borough:brooklyn (Conf:30.04%,Supp:5.36%)
+[borough:manhattan] =====> agency:nypd (Conf:17.61%,Supp:2.48%)
+[borough:manhattan] =====> agency:dot (Conf:24.59%,Supp:3.47%)
+[borough:manhattan] =====> agency:dep (Conf:22.54%,Supp:3.18%)
+####Description:
+Complaints going to Department of Transportation are most likely related to Queens and Brooklyn, and less likely related to manhattan. 
+However, complaints related to manhattan are most likely to go to dot. This means although manhattan has the least transportation problems amount these three areas. The transportation problem would still be the area's most severe problem. It is reasonable, because manhattan has so more metro lines running which are old and need to be maintained periodically, and this troubles residents a lot.
+####Use cases:
+More resources in dot should be allocate to the Queens and Brooklyn branches than the others. But dot in manhattan still should have the most resources among the other departments.
 
-Here we list some of interesting observations about the rules. We focus on one
-fixed value for the LHS in order to simplify the discussion.
+###2. Location type VS Borough:
+[location type:street] =====> borough:queens (Conf:28.20%,Supp:2.41%)
+[location type:street] =====> borough:manhattan (Conf:25.65%,Supp:2.20%)
+[location type:street] =====> borough:brooklyn (Conf:28.72%,Supp:2.46%)
+[location type:street/sidewalk] =====> borough:queens (Conf:27.93%,Supp:2.16%)
+[location type:street/sidewalk] =====> borough:brooklyn (Conf:31.53%,Supp:2.44%)
+####Description:
+Street related complaints most likely happen in Queens and Brooklyn. It means there are streets related issues in these areas. Maybe street conditions are not so good in these areas. Or there are not enough parking spots, sidewalks are occupied by lots of cars.
+####Use cases:
+Government should check out what the real problem is. Measures need to be taken to improve the street conditions to reduce the amount of street related complaits.
 
-1. Complaint Type VS Month
+###3. Season VS Complaint type:
+[complaint type:heating] =====> season:2 (Conf:18.09%,Supp:2.33%)
+[complaint type:heating] =====> season:12 (Conf:18.52%,Supp:2.38%)
+[complaint type:heating] =====> season:11 (Conf:18.68%,Supp:2.40%)
+[complaint type:heating] =====> season:1 (Conf:15.90%,Supp:2.05%)
+[season:12] =====> complaint type:heating (Conf:27.65%,Supp:2.38%)
+[season:11] =====> complaint type:heating (Conf:27.00%,Supp:2.40%)
+[season:1] =====> complaint type:heating (Conf:23.18%,Supp:2.05%)
+[season:2] =====> complaint type:heating (Conf:26.19%,Supp:2.33%)
+####Description:
+Complaints about heating happen mostly during the winter (November to February). It makes sense because winter is likely the only season when heating facilities would be used by habitants. On the other hand, the comlaints agencies get during winter are about heating issues. It makes sense people would stay at home the most of time when it is so cold outside. Issues like street light condition would be less possible to be noticed, let alone complaining about it.
+####Use cases:
+More attention should be paid on the heating issues during winter. Maybe more human resource should be transferred to the agency that is responsible for the heating problem, e.g. Department of Housing Perservation & Development.
 
-[HEATING] => [January](Conf: 24%, Supp: 3%)
-[HEATING] => [December](Conf: 21%, Supp: 3%)
-[December] => [HEATING](Conf: 30%, Supp: 3%)
-[January] => [HEATING](Conf: 30%, Supp: 3%)
-[January,RESIDENTIAL BUILDING] => [HEATING](Conf: 55%, Supp: 3%)
+###4. Complaint type VS Solve time
+[complaint type:blocked driveway] =====> solve time:same day (Conf:86.21%,Supp:2.65%)
+[complaint type:street light condition] =====> solve time:same day (Conf:54.60%,Supp:4.00%)
+[complaint type:sewer] =====> solve time:same day (Conf:43.45%,Supp:2.27%)
+[complaint type:heating] =====> solve time:more than 1 week (Conf:28.24%,Supp:3.63%)
+[complaint type:heating] =====> solve time:less than 1 week (Conf:66.81%,Supp:8.59%)
+####Description:
+The assosiation rules above tell us what is the likely time range it would be for a specific kind of complaints to be solved. 
+In addition, complaints about blocked driveway and street light condition is more likely to be solved the same day, and it is likely to take longer time to solve complaints about sewer and heating issues.
+####Use cases:
+Residents should be aware of the likely time it would take to solve a specific problem. If it goes beyond the likely time the problem would take to be solved, there maybe something wrong. Residents may consider to contact the agency again to check if the complaint is processed properly.
 
-* Observation:
-Most complaints about 'HEATING' happen in winter (Dec. and Jan.). This is reasonable because
-residents use heating a lot at that time. If there was a contact with 311 in January from a
-Residential building, it was highly likely that it was for heating. This can help 311 to devote resources to handling heating problems in January.
+###5. Borough VS Solve time
+[borough:bronx] =====> solve time:same day (Conf:42.40%,Supp:3.24%)
+[borough:brooklyn] =====> solve time:same day (Conf:41.80%,Supp:7.73%)
+[borough:queens] =====> solve time:same day (Conf:40.68%,Supp:7.69%)
+[borough:manhattan] =====> solve time:same day (Conf:33.57%,Supp:4.73%)
+####Description:
+Complaints are likely to be solved most efficiently in Bronx, and lest efficiently in Manhattan. 
+####Use case:
+It could be considered as one factor of determinating living condition of residents in specific borough.
 
-2. Agency VS Complaint Type
+###6. Complaint type VS Borough
+[complaint type:street light condition] =====> borough:queens (Conf:36.93%,Supp:2.71%)
+[complaint type:sewer] =====> borough:queens (Conf:39.97%,Supp:2.09%)
+####Description:
+Street light problem and sewer problem are most severe in Queens.
+####Use cases:
+Agencies that are responsible for these kind of problems, e.g. street light problem and sewer problem, should distribute more resources to Queens.
 
-[HPD] => [HEATING](Conf: 35%, Supp: 13%)
-[HPD] => [GENERAL CONSTRUCTION](Conf: 18%, Supp: 7%)
-[HPD] => [PLUMBING](Conf: 16%, Supp: 6%)
-[HPD] => [NONCONST](Conf: 10%, Supp: 4%)
-
-* Note: HPD = Department of Housing Preservation and Development
-
-* Observation:
-Complaints to agency 'HPD' are more about 'HEATING', instead of other types.
-'NONCONST' is miscellaneous information such as reported vermin etc.
-
-* Application:
-This can be used to make smart workload distribution in each agency.
-
-According to the complaints to Department of Housing Preservation and Development, we know that HPD should have more employees to deal with 'HEATING' problem.
-
-3. Agency VS Borough
-
-[DOT] => [QUEENS](Conf: 30%, Supp: 6%)
-[DOT] => [BROOKLYN](Conf: 28%, Supp: 5%)
-[DOT] => [MANHATTAN](Conf: 19%, Supp: 4%)
-[DOT] => [BRONX](Conf: 13%, Supp: 2%)
-[BRONX] => [DOT](Conf: 30%, Supp: 2%)
-
-* Note: DOT = Department of Transportation
-
-* Observation:
-Complaints to agency 'DOT' are more likely to happen in 'QUEENS' and 'BROOKLYN'. However,
-even though complaints to DOT is the least from the Bronx, a lot of the complaints from
-Bronx are to the DOT.
-
-* Application:
-This can be used to evaluate the living condition of the borough, especially for the traffic condition in this case.
-
-This either shows that there is much more of transportation issues in Queens and Brooklyn rather than
-Manhattan (which is rather counter-intuitive). However, if we consider that Queens and Brooklyn are
-residential areas, it makes sense. People are less tolerant of transportation issues in the suburbs.
-
-4. Complaint Type VS Agency VS Borough
-
-[NYPD,BROOKLYN] => [Street/Sidewalk](Conf: 81%, Supp: 2%)
-[NYPD,Street/Sidewalk] => [BROOKLYN](Conf: 32%, Supp: 2%)
-
-[DOT,QUEENS] => [Street Light Condition](Conf: 44%, Supp: 2%))
-[DOT,Street Light Condition] => [QUEENS](Conf: 33%, Supp: 2%)
-
-[DOB] => [QUEENS](Conf: 34%, Supp: 2%)
-[DSNY] => [BROOKLYN](Conf: 33%, Supp: 3%)
-
-* Observation:
-The rules list the highest confidence for the borough they are about. Most of the reasons
-why the NYPD was called into to Brooklyn was for Street and sidewalk issues. That is, this was
-the greatest non-emergency reason for NYPD to go into Brooklyn.  Similarly, for DOT in
-Queens due to street light issues. Department of Buildings dealt with Queens while Department
-of Sanitation dealt with Brooklyn.
-
-* Application:
-This will also help government agencies to make smart workload distribution in each borough.
-
-
-These are only a few of the rules that were generated. Even with the random
-sampling, we have a lot more interesting rules in the example-run.txt file.
-With more tweaking of the support and confidence parameters and possibly a
-larger sample, we may be able to obtain even more richer results.
+###7. Complaint type VS Agency
+[complaint type:water system] =====> agency:dep (Conf:100.00%,Supp:4.45%)
+[complaint type:street condition] =====> agency:dot (Conf:100.00%,Supp:4.38%)
+[complaint type:sewer] =====> agency:dep (Conf:100.00%,Supp:5.22%)
+[complaint type:noise] =====> agency:dep (Conf:100.00%,Supp:2.56%)
+[complaint type:noise - street/sidewalk] =====> agency:nypd (Conf:100.00%,Supp:2.12%)
+[complaint type:electric] =====> agency:hpd (Conf:100.00%,Supp:2.05%)
+[agency:dep] =====> complaint type:water system (Conf:32.25%,Supp:4.45%)
+[agency:dep] =====> complaint type:sewer (Conf:37.88%,Supp:5.22%)
+[agency:dep] =====> complaint type:noise (Conf:18.57%,Supp:2.56%)
+####Description:
+We can see the responsibilities of each agency, Department of Environmental protection (dep) is responsible for water system, New York Police Department (NYPD) is responsible for noise - street/sidewalk, and so on.
+We can see how the incoming complaints distribute among different agencies. dep gets the most complaints about water system and sewer.
+####Use cases:
+Residents can use these rules to inquiry corresponding agencies when they encounter specific issues. 
+The second observation can help agencies allocate their resources according to the amount of complaints they get about the specific issue. For example, dep should have more human resources dealing with water system and sewer than noise.
