@@ -162,8 +162,7 @@ def genSizeKFrequentItemsets(k,p_itemsets,p_hash_count,transactions,transactions
         temp_transaction = set(transaction)
         for element in cur_itemsets:
             if debug:
-                pass
-                #print element
+                print element
                 #raw_input()
             #print "haha"
             if element[2].issubset(temp_transaction) == True:
@@ -314,7 +313,7 @@ def main():
         print k
         print frequent_list
         print hash_count_all
-        print transactions_count
+    print transactions_count
     displayFrequentItems(k,frequent_list,hash_count_all,transactions_count,args.min_sup,args.debug)
     genAssociateRule(k,frequent_list,hash_count_all,transactions_count,args.min_conf,args.debug)
     if not args.debug:

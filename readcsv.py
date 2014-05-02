@@ -106,32 +106,25 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
             if count > max_rows:
                 break
             if line%20 == 0:
-                if debug:
-                    print raw_row
                 processed_row = list()
                 flag = True
                 for key in interest_columns_dict.keys():
 # process date
                     int_key = int(key)
-                    if debug:
-                        print int_key
-                        print raw_row[int_key]
                     if int_key==97:
                         if raw_row[interest_columns_dict[key][1]] != '' and raw_row[interest_columns_dict[key][2]] != '': 
                             #print raw_row[1]
                             #print raw_row[2]
                             delta_days=int((datetime.strptime(raw_row[interest_columns_dict[key][2]],"%m/%d/%Y %I:%M:%S %p") - datetime.strptime(raw_row[interest_columns_dict[key][1]],"%m/%d/%Y %I:%M:%S %p")).days)
-                            if debug:
-                                print delta_days
                             prefix = interest_columns_dict[key][0]
                             if delta_days <= 0:
                                 processed_row.append(prefix+':same day')
-#                            elif delta_days >= 30:
-#                                processed_row.append(prefix+':more than 1 month')
+                            if delta_days < 7:
+                                processed_row.append(prefix+':less than 1 month')
+                            elif delta_days >= 30:
+                                processed_row.append(prefix+':more than 1 month')
                             elif delta_days >= 7:
                                 processed_row.append(prefix+':more than 1 week')
-                            else:
-                                processed_row.append('')
                             #print time.strptime("%m/%d/%y %H:%M","0"+raw_row[1])
                             #raw_input()
                         else:

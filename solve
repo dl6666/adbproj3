@@ -1,0 +1,121 @@
+[solve time:same day],25.91%
+[solve time:same day,agency:nypd],8.14%
+[solve time:same day,agency:dot],7.96%
+[borough:brooklyn,solve time:same day],7.73%
+[solve time:same day,borough:queens],7.69%
+[solve time:same day,location type:street/sidewalk],6.49%
+[solve time:same day,agency:nypd,location type:street/sidewalk],6.49%
+[agency:dep,solve time:same day],5.11%
+[borough:manhattan,solve time:same day],4.73%
+[solve time:same day,complaint type:street light condition],4.00%
+[solve time:same day,agency:dot,complaint type:street light condition],4.00%
+[solve time:same day,borough:bronx],3.24%
+[solve time:same day,complaint type:traffic signal condition],3.02%
+[solve time:same day,agency:dot,complaint type:traffic signal condition],3.02%
+[solve time:same day,complaint type:blocked driveway],2.65%
+[solve time:same day,agency:nypd,complaint type:blocked driveway],2.65%
+[solve time:same day,complaint type:blocked driveway,location type:street/sidewalk],2.65%
+[solve time:same day,agency:nypd,complaint type:blocked driveway,location type:street/sidewalk],2.65%
+[solve time:same day,season:6],2.61%
+[solve time:same day,borough:queens,agency:dot],2.59%
+[borough:brooklyn,solve time:same day,agency:dot],2.57%
+[borough:brooklyn,solve time:same day,agency:nypd],2.50%
+[solve time:same day,season:7],2.45%
+[solve time:same day,season:1],2.37%
+[solve time:same day,season:4],2.35%
+[solve time:same day,season:8],2.34%
+[solve time:same day,location type:street],2.34%
+[solve time:same day,complaint type:sewer],2.27%
+[agency:dep,solve time:same day,complaint type:sewer],2.27%
+[solve time:same day,borough:queens,agency:nypd],2.19%
+[complaint type:water system,solve time:same day],2.17%
+[agency:dep,complaint type:water system,solve time:same day],2.17%
+[solve time:same day,season:10],2.12%
+[borough:brooklyn,solve time:same day,location type:street/sidewalk],2.08%
+[borough:brooklyn,solve time:same day,agency:nypd,location type:street/sidewalk],2.08%
+[solve time:same day,season:5],2.06%
+[solve time:same day,season:3],2.04%
+[solve time:same day,season:9],2.03%
+[borough:manhattan,solve time:same day,agency:nypd],2.02%
+[solve time:same day,season:2],2.01%
+[solve time:same day,agency:dsny],2.01%
+[solve time:same day,location type:street/sidewalk] =====> agency:nypd (Conf:100.00%,Supp:6.49%)
+[solve time:same day,complaint type:street light condition] =====> agency:dot (Conf:100.00%,Supp:4.00%)
+[solve time:same day,complaint type:traffic signal condition] =====> agency:dot (Conf:100.00%,Supp:3.02%)
+[solve time:same day,complaint type:blocked driveway] =====> agency:nypd (Conf:100.00%,Supp:2.65%)
+[solve time:same day,complaint type:blocked driveway] =====> location type:street/sidewalk (Conf:100.00%,Supp:2.65%)
+[solve time:same day,complaint type:blocked driveway,location type:street/sidewalk] =====> agency:nypd (Conf:100.00%,Supp:2.65%)
+[solve time:same day,agency:nypd,complaint type:blocked driveway] =====> location type:street/sidewalk (Conf:100.00%,Supp:2.65%)
+[solve time:same day,complaint type:sewer] =====> agency:dep (Conf:100.00%,Supp:2.27%)
+[complaint type:water system,solve time:same day] =====> agency:dep (Conf:100.00%,Supp:2.17%)
+[borough:brooklyn,solve time:same day,location type:street/sidewalk] =====> agency:nypd (Conf:100.00%,Supp:2.08%)
+[complaint type:blocked driveway] =====> solve time:same day (Conf:86.21%,Supp:2.65%)
+[agency:nypd,complaint type:blocked driveway] =====> solve time:same day (Conf:86.21%,Supp:2.65%)
+[complaint type:blocked driveway,location type:street/sidewalk] =====> solve time:same day (Conf:86.21%,Supp:2.65%)
+[agency:nypd,complaint type:blocked driveway,location type:street/sidewalk] =====> solve time:same day (Conf:86.21%,Supp:2.65%)
+[borough:queens,agency:nypd] =====> solve time:same day (Conf:85.71%,Supp:2.19%)
+[borough:brooklyn,location type:street/sidewalk] =====> solve time:same day (Conf:85.12%,Supp:2.08%)
+[borough:brooklyn,agency:nypd,location type:street/sidewalk] =====> solve time:same day (Conf:85.12%,Supp:2.08%)
+[borough:brooklyn,agency:nypd] =====> solve time:same day (Conf:84.29%,Supp:2.50%)
+[location type:street/sidewalk] =====> solve time:same day (Conf:83.74%,Supp:6.49%)
+[agency:nypd,location type:street/sidewalk] =====> solve time:same day (Conf:83.74%,Supp:6.49%)
+[borough:brooklyn,solve time:same day,agency:nypd] =====> location type:street/sidewalk (Conf:83.10%,Supp:2.08%)
+[agency:nypd] =====> solve time:same day (Conf:82.86%,Supp:8.14%)
+[borough:manhattan,agency:nypd] =====> solve time:same day (Conf:81.35%,Supp:2.02%)
+[solve time:same day,agency:nypd] =====> location type:street/sidewalk (Conf:79.70%,Supp:6.49%)
+[complaint type:traffic signal condition] =====> solve time:same day (Conf:72.85%,Supp:3.02%)
+[agency:dot,complaint type:traffic signal condition] =====> solve time:same day (Conf:72.85%,Supp:3.02%)
+[complaint type:street light condition] =====> solve time:same day (Conf:54.60%,Supp:4.00%)
+[agency:dot,complaint type:street light condition] =====> solve time:same day (Conf:54.60%,Supp:4.00%)
+[solve time:same day,agency:dot] =====> complaint type:street light condition (Conf:50.29%,Supp:4.00%)
+[complaint type:water system] =====> solve time:same day (Conf:48.88%,Supp:2.17%)
+[agency:dep,complaint type:water system] =====> solve time:same day (Conf:48.88%,Supp:2.17%)
+[borough:brooklyn,agency:dot] =====> solve time:same day (Conf:48.03%,Supp:2.57%)
+[borough:queens,agency:dot] =====> solve time:same day (Conf:47.67%,Supp:2.59%)
+[agency:dot] =====> solve time:same day (Conf:44.62%,Supp:7.96%)
+[agency:dep,solve time:same day] =====> complaint type:sewer (Conf:44.44%,Supp:2.27%)
+[complaint type:sewer] =====> solve time:same day (Conf:43.45%,Supp:2.27%)
+[agency:dep,complaint type:sewer] =====> solve time:same day (Conf:43.45%,Supp:2.27%)
+[borough:manhattan,solve time:same day] =====> agency:nypd (Conf:42.68%,Supp:2.02%)
+[agency:dep,solve time:same day] =====> complaint type:water system (Conf:42.57%,Supp:2.17%)
+[borough:bronx] =====> solve time:same day (Conf:42.40%,Supp:3.24%)
+[borough:brooklyn] =====> solve time:same day (Conf:41.80%,Supp:7.73%)
+[solve time:same day,location type:street/sidewalk] =====> complaint type:blocked driveway (Conf:40.85%,Supp:2.65%)
+[solve time:same day,agency:nypd,location type:street/sidewalk] =====> complaint type:blocked driveway (Conf:40.85%,Supp:2.65%)
+[borough:queens] =====> solve time:same day (Conf:40.68%,Supp:7.69%)
+[solve time:same day,agency:dot] =====> complaint type:traffic signal condition (Conf:37.99%,Supp:3.02%)
+[agency:dep] =====> solve time:same day (Conf:37.03%,Supp:5.11%)
+[solve time:same day,borough:queens] =====> agency:dot (Conf:33.72%,Supp:2.59%)
+[borough:manhattan] =====> solve time:same day (Conf:33.57%,Supp:4.73%)
+[borough:brooklyn,solve time:same day] =====> agency:dot (Conf:33.32%,Supp:2.57%)
+[solve time:same day,agency:dot] =====> borough:queens (Conf:32.58%,Supp:2.59%)
+[solve time:same day,agency:nypd] =====> complaint type:blocked driveway (Conf:32.55%,Supp:2.65%)
+[season:6] =====> solve time:same day (Conf:32.50%,Supp:2.61%)
+[borough:brooklyn,solve time:same day] =====> agency:nypd (Conf:32.38%,Supp:2.50%)
+[solve time:same day,agency:dot] =====> borough:brooklyn (Conf:32.33%,Supp:2.57%)
+[solve time:same day,location type:street/sidewalk] =====> borough:brooklyn (Conf:32.05%,Supp:2.08%)
+[solve time:same day,agency:nypd,location type:street/sidewalk] =====> borough:brooklyn (Conf:32.05%,Supp:2.08%)
+[solve time:same day] =====> agency:nypd (Conf:31.41%,Supp:8.14%)
+[solve time:same day,agency:nypd] =====> borough:brooklyn (Conf:30.74%,Supp:2.50%)
+[solve time:same day] =====> agency:dot (Conf:30.73%,Supp:7.96%)
+[season:4] =====> solve time:same day (Conf:29.82%,Supp:2.35%)
+[solve time:same day] =====> borough:brooklyn (Conf:29.82%,Supp:7.73%)
+[solve time:same day] =====> borough:queens (Conf:29.69%,Supp:7.69%)
+[season:7] =====> solve time:same day (Conf:29.04%,Supp:2.45%)
+[solve time:same day,borough:queens] =====> agency:nypd (Conf:28.49%,Supp:2.19%)
+[season:8] =====> solve time:same day (Conf:27.79%,Supp:2.34%)
+[season:9] =====> solve time:same day (Conf:27.54%,Supp:2.03%)
+[season:5] =====> solve time:same day (Conf:27.44%,Supp:2.06%)
+[location type:street] =====> solve time:same day (Conf:27.30%,Supp:2.34%)
+[solve time:same day,agency:nypd] =====> borough:queens (Conf:26.93%,Supp:2.19%)
+[borough:brooklyn,solve time:same day] =====> location type:street/sidewalk (Conf:26.91%,Supp:2.08%)
+[season:1] =====> solve time:same day (Conf:26.88%,Supp:2.37%)
+[agency:dsny] =====> solve time:same day (Conf:26.00%,Supp:2.01%)
+[solve time:same day] =====> location type:street/sidewalk (Conf:25.04%,Supp:6.49%)
+[solve time:same day,agency:nypd] =====> borough:manhattan (Conf:24.83%,Supp:2.02%)
+[season:10] =====> solve time:same day (Conf:24.76%,Supp:2.12%)
+[season:3] =====> solve time:same day (Conf:23.76%,Supp:2.04%)
+[season:2] =====> solve time:same day (Conf:22.67%,Supp:2.01%)
+[solve time:same day] =====> agency:dep (Conf:19.71%,Supp:5.11%)
+[solve time:same day] =====> borough:manhattan (Conf:18.27%,Supp:4.73%)
+[solve time:same day] =====> complaint type:street light condition (Conf:15.45%,Supp:4.00%)
