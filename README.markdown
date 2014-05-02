@@ -34,39 +34,23 @@ It turned out to be the fact that the events occurred in each month are nearly o
 
 The original data contains a lot of fields that are not suitable for naive data mining(for example: filed with contiguous value,such as date format)
 
-After checking the original form, we found that **created date** and **close date** can be mapped into one field called**"solve time"** which represents how soon this event is solved. And we separate the time period into 3 slots to fit this field 
+After checking the original form, we found that **created date** and **close date** can be mapped into one field called**"solve time"** which represents how soon this event is solved. And we separate the time period into 4 slots to fit this field,namely: *"same day"*,*"less than 1 week"*,*"more than 1 week"* and *"more than 1 month"*.
 
+When this field combing with the agency,the borough or complaint type, this can give us the hint about how soon this event will be solved.
 
-Step 2. Choosing attributes (items)
-All the attributes in the 311 are not interesting. Some of them are mostly empty, such as school
-information. Some attributes are almost unique for each row, such as latitude and longitude. We
-therefore, chose a set of attributes that we focused our attention on. This is the same set included
-in our optionally submitted file in data/attr_list.txt, which is used in generate_CSV.py. We parse
-our main CSV file and do the sampling and only project on these attributes. One additional change we
-did was change the Created Date attribute into a Month (i.e. 01/01/2009 12:00 AM -> January).
+What's more, we mapped the created date to a field called **"season"** by taking out its creation month as (1,2,3,4,etc,12),by this field, we want to see the distribution of each event type.
 
-Created Date
+And we keep some other fields which are listed below, also, there are some fields obviously dependent on other fields, to avoid trivial rules as much as possible with naive a-priori algorithm, we just take one of these highly-coupled columns.
+
 Agency
 Complaint Type
 Location Type
-Incident Zip
-Street Name
 Borough
 
--------------------------------------------------------------
-(c) what makes your choice of INTEGRATED-DATASET file interesting (in other words, justify your choice of NYC Open Data data set(s))
+###(3) what makes your choice of INTEGRATED-DATASET file interesting (in other words, justify your choice of NYC Open Data data set(s))
 
-This dataset is rich, diverse and massive (one of the largest on the website). As a result, it highly
-non-obvious and non-trivial to find out any meaningful patterns and information from this data, which
-is where our association rule mining algorithm comes in. Since the dataset is so diverse, it is
-possible for us to obtain information about a variety of different issues (among all the  different
-types of issues that the 311 calls are about), and cover a lot of ground. Furthermore, 311 routes
-and interconnects various departments of the NYC government. We get to see and process this highly
-diverse and immensely interconnected data that, not only connects all the different parts of the
-city to the government, but also connects all the different parts of the government. We, therefore,
-anticipate broad, overarching rules from our data set. However, the caveat is that since the
-dataset is so diverse, we need to set our support and confidence values reasonably low to obtain
-any sort of interesting results.
+As we described in the above section, 
+
 
 -------------------------------------------------------------
 d) clear description of how to run your program

@@ -99,8 +99,6 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
         with open("./csv_head","w") as out_head:
             json.dump(out_put_dict,out_head,indent = 4)
 
-        #raw_input()
-        raw_input()
         
         for raw_row in raw_transactions:
             if count > max_rows:
@@ -119,7 +117,7 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
                             prefix = interest_columns_dict[key][0]
                             if delta_days <= 0:
                                 processed_row.append(prefix+':same day')
-                            if delta_days < 7:
+                            elif delta_days < 7:
                                 processed_row.append(prefix+':less than 1 week')
                             elif delta_days >= 30:
                                 processed_row.append(prefix+':more than 1 month')
