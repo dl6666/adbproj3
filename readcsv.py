@@ -120,7 +120,7 @@ def processCSV(input_file_path,output_file_path,max_rows,null_filter,debug):
                             if delta_days <= 0:
                                 processed_row.append(prefix+':same day')
                             if delta_days < 7:
-                                processed_row.append(prefix+':less than 1 month')
+                                processed_row.append(prefix+':less than 1 week')
                             elif delta_days >= 30:
                                 processed_row.append(prefix+':more than 1 month')
                             elif delta_days >= 7:
