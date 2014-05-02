@@ -251,7 +251,7 @@ def genAssociateRule(k,frequent_list,hash_count_all,transactions_count,min_conf,
                             print temp_list
                             print frequent_item
 #                        print "[%s] =====> %s (Conf:%s,Supp:%s)"%(",".join(temp_list),name_list[int(frequent_item[0][j])],'{:.2%}'.format(float(sup)/sup2),'{:.2%}'.format(float(sup)/transactions_count))
-                        associate_rule_out_put_list.append(("[%s] =====> %s (Conf:%s,Supp:%s)"%(",".join(temp_list),name_list[int(frequent_item[0][j])],'{:.2%}'.format(float(sup)/sup2),'{:.2%}'.format(float(sup)/transactions_count)),float(sup)/sup2,float(sup)/transactions_count))
+                        associate_rule_out_put_list.append(("[%s] =====> [%s] (Conf:%s,Supp:%s)"%(",".join(temp_list),name_list[int(frequent_item[0][j])],'{:.2%}'.format(float(sup)/sup2),'{:.2%}'.format(float(sup)/transactions_count)),float(sup)/sup2,float(sup)/transactions_count))
                             
         associate_rule_out_put_list = sorted(associate_rule_out_put_list,key=itemgetter(1,2),reverse=True)
         for associate_rule in associate_rule_out_put_list:

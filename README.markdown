@@ -47,177 +47,161 @@ Complaint Type
 Location Type
 Borough
 
+At last, we add the head of each column to its content, this will solve the potential problem that different columns have the same value.
+
+
 ###(3) what makes your choice of INTEGRATED-DATASET file interesting (in other words, justify your choice of NYC Open Data data set(s))
 
-As we described in the above section, 
+As we described in the above section, we creatively map two date format fields to **1.event solve time** and **2.event created month**, these two new fields are very interesting.
+By these two fields, we can get the knowledge of how soon a certain event was solved, with these associate rules, we can predict how soon the current event will finally be solved.
+
+For example:
+A associate rule called:
+[complaint type:water system] =====> solve time:same day (Conf:48.88%,Supp:2.17%)
+it will tell us that if water system breaks, there is about 50% possibility that this problem will be solved in the same day. That is, if this occurs in your area, you don't need to worry about too much.
+
+What's more:
+[borough:staten island] =====> solve time:less than 1 week (Conf:44.98%,Supp:2.06%)
+and 
+[borough:bronx] =====> solve time:same day (Conf:42.40%,Supp:3.24%)
+can give us the information about, if a event occurred in a certain area, how soon we can expect it will be solved.
+
+And with different agent and different area, we can compare their different efficiency.
+The more detailed specification you can found in the later part.
+
+###(4) The explanation should be detailed enough to allow us to recreate your INTEGRATED-DATASET file exactly from scratch from the NYC Open Data site.
+####(a)
+At first you should open the link to the data sheet
+####(b)
+**Then you should sort the data sheet by the Created Date**
+####(c)
+Download the dataset
+####(d)
+run the python script:
+python2.7 readcsv.py -i \<YOUR DATA FILE NAME\> -m 100000
+(the later -m parameter means that the max records in the output file is 100000(100k))
 
 
--------------------------------------------------------------
-d) clear description of how to run your program
+##(D) clear description of how to run your program
 
 Run the following from the directory where you put run.sh (NOTE: you must cd to that directory before running this command):
 
-sh run.sh <INTEGRATED-DATASET-FILE> <min_sup> <min_conf>
+sh run.sh \<INTEGRATED-DATASET-FILE\> \<min_sup\> \<min_conf\>
 
 , where:
-<INTEGRATED-DATASET-FILE> is the path to the CSV file
-<min_sup> is the value of minimun support
-<min_conf> is the value of minimun confidence
+\<INTEGRATED-DATASET-FILE\> is the path to the CSV file
+\<min_sup\> is the value of minimun support
+\<min_conf\> is the value of minimun confidence
 
 This will produce a file called output.txt, containing the requisite output for our project.
 
-For example, on a CLIC machine:
-cd /home/yd2234/ADB/proj3/COMSW6111_P3
-sh run.sh data/INTEGRATED-DATASET.csv 0.02 0.1
-
-will produce a file called output.txt in the cwd.
-
 You can run also run our scripts directly by calling
-python extract_Rule.py <INTEGRATED-DATASET> <min_sup> <min_conf> <OUTPUT-FILE>
-
--------------------------------------------------------------
-e) A clear description of the internal design of your project
-
-We have only one python script: extract_Rule.py, with two main functions for large itemsets and
-association rules respectively.
-
-Part 1. Large Itemsets
-
-This part will extract large itemsets above the given minimum support. The main functions include:
-	* extractItemsets: A priori algorithm to extract the large itemsets
-	* compute_L1: step 1 for A priori algorithm to compute L_1
-	* getCandidate: candidate generation for A Priori Algorithm
-
-Detailed description is as follows:
-
-1. extractItemsets: the main function for A priori algorithm. Here we used the same A priori algorithm as
-described in Section 2.1 of the Agrawal and Srikant paper.
-
-Our A priori algorithm is:
-
-	Step 1. Generate large 1-itemsets L_1 by calling function compute_L1.
-	Step 2. As long as the previous L_{k-1} is non-empty, we compute the candidate C_k by calling function
-            getCandidate. Then keep the candidates whose support is above min-sup as L_k.
-	Step 3. Store all the large itemsets {L_k} and return
-
-2. compute_L1: compute the first step of A priori algorithm to get L_1. To avoid reading the input file
-multiple times, we also store all the baskets in memory to speed up. After the itemsets have been generated,
-we delete this storage to potentially reclaim memory.
-
-3. getCandidate: function to generate the candidates C_k for A priori algorithm. Here we used the similar
-Apriori Candidate Generation method as described in Section 2.1.1 of the Agrawal and Srikant paper.
-
-The slight difference is that we will never keep two items from the same column in one basket.
-For example, considering the column 'Month', no basket will have two months September and
-January. So we changed the join condition as "only the last items in the basket are from different columns".
-This is because, unlike the transaction example, our items have different domains (in the transaction, they
-were all purchased items). Therefore, it makes no sense to have an itemset like {September, April}. Such
-an itemset will not have a non-zero support anyway but we never create such an itemset in the first place.
-
-Our Apriori Candidate Generation method is:
-
-	* Data Structure:
-	Each item will contain two fields, the item value and the column number where this item is from. For example,
-    one item is ('Bronx',5), which means the value for this item is 'Bronx', and it's from the 5-th column of
-    the CSV file, indicating that's the Borough attribute.
-	So item.value = 'Bronx', and item.colNo = 5.
-
-	The definitions for L_k and C_k are the same as the paper.
-
-	* Join Step:
-	insert into C_k
-	select p.item_1, p.item_2, ... , p.item_{k-1}, q.item_{k-1}
-	from L_{k-1} p, L_{k-1} q
-	where p.item_1 = q.item_1, ..., p.item_{k-2} = q.item_{k-2},
-		p.item_{k-1}.colNo < q.item_{k-1}.colNo
-
-	So our the items in each itemset are kept sorted in their column number, instead of lexicographic order. We
-    know that in our selected attributes, items in different columns will never be the same (such as 'Month' and
-    'Complaint Type' columns will never share values). Therefore, it's ok to define such join condition " only
-    the last items in p and q are from different columns".
-
-	* Prune Step:
-	Use the same prune method to remove candidates whose subsets are not in L_{k-1} as the paper.
+python2.7 adbproj3.py -i <INTEGRATED-DATASET> -s <min_sup> -m <min_conf> 
 
 
-Part 2. Association Rules
+##(E) A clear description of the internal design of your project
+The source code is within one python script file called adbproj3.py 
 
-Once we have the large itemsets, to get the rules, we simply iterate through our k sized large
-itemsets (from k = 2 to the largest one). There are two optimizations we can make.
+###(1) General Design 
+Our main design principle is to reduce the data size needed to process. 
+**To achieve this goal, we map all the each original string to an unique integer and keeps the mapping as a temporary file in the disk**, obviously, same string will be mapped to the same integer.
+In the later *itemsets generation*step and *associate rule generation* step, we don't care what the really value of the integer until we output the rule or the itemset to file. At this step, we will reverse the integer to its real meaning   
+For example:
+-------------------
+pen,ink,diary,soap
+pen,ink,diary
+pen,diary
+pen,ink,soap
 
-First is the rule generation itself. The number of rules for all itemsets is very large if we do
-it naively and generate all possible rules with >= 1 items in the LHS and =1 items in the RHS
-for all k-itemsset. For instance, in a large itemset of size k, the only rules we need to generate
-are the rules with k-1 items on the LHS and 1 item on the RHS. This follows because
-all rules with < k-1 items on the LHS must have been generated for a smaller k itemset.
-For instance, for an itemset {x,y,z}, it must have been created from {x,y} and {x,z}.
-It follows that there must be an itemset {y z} also since {x y z} is large. Therefore,
-all rules [x] => [z] and [x] => [y] and [y] => [z] must have been generated in a smaller
-sized k. This optimization is extremely useful as the number of
-rules generated per k-sized itemset is exactly k. Another benefit for this method is that
-all rules generated are DISTINCT because the itemsets themselves are distinct (by definition).
-As you can see, this optimization is incredibly beneficial and makes the solution elegant.
+will be converted to 
+['0', '1', '2', '3'], ['0', '1', '2'], ['0', '2'], ['0', '1', '3']
 
-The second optimization is as discussed in class. We never need to go to the data file
-again to calculate the confidence for these rules. Given a rule: [LHS] => [RHS], the
-confidence for this rule is Support(LHS U RHS)/Support(LHS). But for a given rule, we
-have identified that Support of (LHS U RHS) is the support of the kth-itemset that
-generated this rule (because of optimization 1, all k-itemsets only generate k-sized rules).
-The Support(LHS) is easily found by looking at the k-1 itemsets and finding the one that
-is equal to LHS. In this way, we can calculate the confidence of a rule in near constant time, which
-is incredibly useful. We can make this amortized constant by hashing the k-itemsets so that
-we can find the support(LHS) in amortized constant time.
+Then we can store all these records in the memory.
 
-Given these optimizations, the functions for generating rules are:
-	* extractRules
-	* getRules
-	* getSupport
+By doing this, we reduce the memory usage and thus operation with this simple number will be faster than tricky string.
 
-1. extractRules
-This function starts at itemsets of size 2 and proceeds till the largest size
-itemset, generating rules for each itemset using getRules below. It then computes
-the confidence for each rules and discards it if it is lower than our minimum
-confidence. The support for this rule is exactly the support for the large
-itemset. This is also stored in the rule. In other words, a rule is stored in the
-format <LHS, RHS, conf, sup>. It stores the rule in a list for later printing.
+And during the converting time, we can also calculate the count of each single item, then store them into a hash table(dict structue in python). this time, we use the *string representation* of the integer as the key(which will be easily expanded to multi-items type)
 
-2. getRules
-This function is extremely simple due to our optimization. It simply returns
-for each element A in the set, a rule [itemset-A] => [A].
+This step is in the function called
+**def processCSV(file_path,debug)**
 
-3. getSupport
-This function simply finds the itemset that matches the input itemset and retrieves
-its stored (from generating large itemsets) support value.
 
-Once both the itemset generation and the rule generation is done, we simply
-call our writeFile function that writes out the calculated itemsets and rules
-to the output file in the correct format.
+###(2) Itemsets Generation
+By converting the string to integer gives us another benefit that we don't need to sort the list, the itemset list is originally sorted.
+For example:
+By generating the transferred record list, we know that we have **n** different single items(by checking the largest integer number).
+Then we start from 0 to n-1.
+By checking the count of the single item with the mini support parameter, we can build L\_1 set, selecting those eligible integer. 
+As you can see, because we start from the lowest integer number, and insert the eligible integer one by one, then the itemset L\_1 is sorted originally.
+And we will see, during the whole iteration step, every itemsets L\_i is also sorted without any additional operation.
 
--------------------------------------------------------------
-f) The command line specification of an interesting sample run
+Above step is finished in the function
+**genFrequentItemsets**
+
+then genFrequentItemsets will call another sub-function called **genSizeKFrequentItemsets** to calculate itemsets of different length **K**, what's more, we will continue this step until the newly construct itemsets contains no element.
+
+To build a length **K** itemsets L\_k from a length **K-1** itemsets L\_(k-1) which is the core part of the apriori algorithm, we firstly introduce the data structure we use.
+For each itemset in the itemsets, the structure is made of of a tuple like:
+(['1','5','8'],'1,5,8',set('1','5','8'),'1,5')
+The first element in the tuple is the real set of the itemset. 
+The second element is a comma separated string, for each different itemset, there will be only one unique string, and we use this string as the key to do the hash-lookup.
+The third element is a set structure in python, we can use its "issubset" method to determine whether current set is another records's subset easily.
+The last string is used when we combing two strings together, we just need to comparing whether these two strings are equal other than the set. 
+For python, every string is treated as a constant, then it will be more efficient.
+
+Along with this L\_(k-1), we also keep the hash count table of each L\_i called H\_i
+
+Actually, these last three structures are used for efficiency, we construct them once and store it with the real set without converting function call everytime which will make the program faster.
+
+To build L\_k, we compare every two pairs of itemset in the L\_(k-1) by order, and we do it by a two level loop from the first element of L\_(k-1), we compare the fourth string of the two itemset tuple, if they are equal we build a temporary length k itemset by simply add the last element of the latter itemset to the first one.
+
+Then we come to the prune step to determine whether every k-1 subset of the temporary itemset is in the previous L\_(k-1) set. 
+We can easily check this by checking whether the string key of each k-1 subset is in the hash table H\_i. If so, then this new itemset is eligible in the candidate set.
+
+as we said before, the L\_1 is sorted,then by our two level loop and the way we inserting new element, the L\_2 is also sorted both in the element itself or in the whole set.
+
+By mathematical induction, we can see each L\_i is sorted and each element in L\_i is sorted.
+
+For example:
+for L\_1, we have [['1'],['5'],['7']]
+then when we are building L\_2, it will be:
+\['1'] ['5'] ==> ['1','5']
+\['1'] ['7'] ==> ['1','7']
+\['5'] ['7'] ==> ['5','7']
+then candidates of  L\_2 will be [['1','5'],['1','7'],['5','7']] 
+
+When we have constructed the candidate set of L\_i, we build H\_i with every key with a value 0
+for each records, we take every itemset in the candidate set to check whether the itemset is a subset of the record, if it is, we then add it's count in the hash table.
+
+This is just a variant of the **subset** function.
+After this,we delete those elements lower than the required support both in L\_i and H\_i.
+
+At last, we keep doing so until the newly generate L\_i becomes a empty set.
+
+
+###(3) Associate Rule Generation
+
+When we get all the non-empty set L\_i and H\_i, we can easily build the all the associate rule by iterate them.
+From the requirement of the project, we know that we need only construct those associate rule with only one item in the RHS(right hand side), then for a certain **K** length itemsets, there should be totally **K** possible associate rules.
+For a certain rule, we need only to take out its LHS count in the H\_(i-1) and the total count in the H\_(i), then it just be the associate rule's confidence
+
+This is in the function:
+**def genAssociateRule**
+
+
+
+
+##(F) The command line specification of an interesting sample run
 
 -- Run this command to get example-run.txt:
 
-sh run.sh data/INTEGRATED-DATASET.csv 0.02 0.1
+sh run.sh INTEGRATED-DATASET.csv 0.02 0.15
 
 -- Briefly explain why the results are interesting
 
-As mentioned above, since the dataset is so diverse, our support and confidence
-values have to relatively low in order to get good results. Note, however, that
-this is by no means outlying information, generated by coincidence. A 20% sample
-of the 1.7 million rows in this table is still over 340k rows. A support of 2%
-means that we have about 7.2k rows that support this rule. The confidence is also
-explained. Each column's domain has a pretty large range of values.  To accommodate
-the various values, our confidence has to be sufficiently low. This results
-directly from the 311 dataset's broad and diverse scope.
+As mentioned above, since the dataset is so diverse, our support and confidence values have to relatively low in order to get good results. Note, however, that this is by no means outlying information, generated by coincidence. A 5% sample of the 1.88 million rows in this table is still over 100k rows. A support of 2% means that we have about 2k rows that support this rule. The confidence is also explained. Each column's domain has a pretty large range of values.  To accommodate the various values, our confidence has to be sufficiently low. This results directly from the 311 dataset's broad and diverse scope.
 
-As discussed in the sections above, these results are interesting because they
-have the potential to tell us information that is diverse and broad in scope. This
-is real data created by real New Yorkers and tells us information about the various
-happenings in the city as well as revealing patterns across many dimensions, such
-as time, location, and government agency. This can help the government manage
-and allocate its resources efficiently to match the patterns that arise from the
-raw data.
+As discussed in the sections above, these results are interesting because they have the potential to tell us information we can use to do the prediction in the future.This is real data created by real New Yorkers and tells us information about the various happenings in the city as well as revealing patterns across many dimensions, such as time, location, and government agency. This can help the government manage and allocate its resources efficiently to match the patterns that arise from the raw data.
 
 -------------------------------------------------------------
 g) Any additional information that you consider significant
