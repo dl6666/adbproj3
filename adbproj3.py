@@ -36,9 +36,8 @@ def processCSV(file_path,debug):
         for raw_row in raw_transactions:
             processed_raw = list()
             transactions_count += 1
-            row = map(lambda x:x.lower(),raw_row)
-            for element in row:
-                if element.lower() in hash_dict:
+            for element in raw_row:
+                if element in hash_dict:
                     processed_raw.append(hash_dict[element])
                     hash_count[hash_dict[element]] += 1
                 else:
